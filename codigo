@@ -1,1 +1,62 @@
 
+interface Reservacion {
+    id: number;
+    cliente: string;
+    estado: 'pendiente' | 'atendida';
+}
+
+
+function registrarReservacion(arreglo: Reservacion[], nueva: Reservacion): void {
+    arreglo.push(nueva);
+}
+
+
+function atenderReservacion(arreglo: Reservacion[], id: number): void {
+    const encontrada = arreglo.find(r => r.id === id);
+    if (encontrada) {
+        encontrada.estado = 'atendida';
+    }
+}
+
+
+function filtrarReservaciones(arreglo: Reservacion[], estado: 'pendiente' | 'atendida'): Reservacion[] {
+    return arreglo.filter(r => r.estado === estado);
+}
+
+
+
+
+console.log("--- INICIO DE PRUEBAS ---");
+
+let reservacionesPruebaVacia: Reservacion[] = [];
+console.log("Arreglo vacío inicial - Cantidad pendientes:", reservacionesPruebaVacia.filter(r => r.estado === 'pendiente').length);
+
+
+let reservaciones: Reservacion[] = [];
+
+registrarReservacion(reservaciones, { id: 1, cliente: "Ana Pérez", estado: "pendiente" });
+registrarReservacion(reservaciones, { id: 2, cliente: "Carlos Gómez", estado: "pendiente" });
+registrarReservacion(reservaciones, { id: 3, cliente: "Sofía Ruiz", estado: "pendiente" });
+
+
+atenderReservacion(reservaciones, 1);
+
+
+console.log("\n--- COMPROBACIÓN DEL ESTADO FINAL ---");
+
+const pendientes = filtrarReservaciones(reservaciones, 'pendiente');
+console.log(`Reservaciones pendientes (${pendientes.length}):`, pendientes);
+
+const atendidas = filtrarReservaciones(reservaciones, 'atendida');
+console.log(`Coincidencias del filtro ('atendida'): ${atendidas.length} registros encontrados.`);
+
+const longitudAntes = reservaciones.length;
+const resultadoFiltro = filtrarReservaciones(reservaciones, 'pendiente');
+const longitudDespues = reservaciones.length;
+
+console.log(`\nVerificación de inmutabilidad del filtro:`);
+console.log(`- Longitud original antes del filtro: ${longitudAntes}`);
+console.log(`- Longitud original después del filtro: ${longitudDespues}`);
+console.log(`- ¿El filtro eliminó registros?: ${longitudAntes !== longitudDespues ? 'SÍ (Error)' : 'NO (Correcto)'}`);
+
+console.log("\nEstado final completo del sistema:", reservaciones);
